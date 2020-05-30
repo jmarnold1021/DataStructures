@@ -36,11 +36,11 @@ public class DataStructuresTestRunner
 
     // Start Linked List Class Tests 1 Test has been implemented.
 
+    // Tests the LinkedList isEmpty Interface.
     @Test
-    public void testEmptyLinkedList() {
+    public void testLinkedListIsEmpty() {
         LinkedList<String> fixture = new LinkedList<String>();
         assertTrue(fixture.isEmpty());
-
     }
 
     

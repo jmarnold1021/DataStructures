@@ -16,8 +16,8 @@ import java.util.ListIterator;
 
 public class LinkedList<E> implements List<E> {
 
-    private Node head = null;
-    private Node tail = head;
+    private Node<E> head = null;
+    private Node<E> tail = head;
     private int size = 0;
    
     @Override
@@ -61,8 +61,24 @@ public class LinkedList<E> implements List<E> {
 
     @Override
     public boolean add(E e) {
-        // TODO Auto-generated method stub
-        return false;
+        
+        if( e == null ) {
+            throw new NullPointerException();
+        }
+
+        Node<E> tmp = new Node<E>(e);
+                
+        
+        if( this.size == 0 ) {
+            this.head = tmp;
+        } else {
+            this.head.setNext(tmp);
+            this.head = this.head.getNext();
+        }
+
+        ++this.size;
+        return true;
+        
     }
 
     @Override
@@ -190,6 +206,5 @@ public class LinkedList<E> implements List<E> {
         public String toString() {
             return getData().toString();
         }
-    }
-    
+    } 
 }
