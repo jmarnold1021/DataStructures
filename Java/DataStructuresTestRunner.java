@@ -14,8 +14,6 @@ import static org.junit.Assert.*;
 import java.util.Collection;
 import java.util.ArrayList;
 
-
-
 public class DataStructuresTestRunner 
 {
 
@@ -29,7 +27,7 @@ public class DataStructuresTestRunner
     @Test
     public void testEmptyCollectionFail() {
         Collection<String> collection = new ArrayList<String>();
-        collection.add("blah"); // no empty anymore...
+        collection.add("blah"); // no empty anymore...fix me
         assertTrue(collection.isEmpty());
     }
 
@@ -42,6 +40,4 @@ public class DataStructuresTestRunner
         LinkedList<String> fixture = new LinkedList<String>();
         assertTrue(fixture.isEmpty());
     }
-
-    
 } 

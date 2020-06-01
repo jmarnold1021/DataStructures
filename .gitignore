@@ -1,1 +1,4 @@
 .vscode
+*.swp
+.DS_Store
+C++/bin

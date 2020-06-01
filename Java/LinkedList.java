@@ -61,24 +61,8 @@ public class LinkedList<E> implements List<E> {
 
     @Override
     public boolean add(E e) {
-        
-        if( e == null ) {
-            throw new NullPointerException();
-        }
-
-        Node<E> tmp = new Node<E>(e);
-                
-        
-        if( this.size == 0 ) {
-            this.head = tmp;
-        } else {
-            this.head.setNext(tmp);
-            this.head = this.head.getNext();
-        }
-
-        ++this.size;
-        return true;
-        
+        // TODO Auto-generated method stub
+        return false;
     }
 
     @Override
@@ -183,7 +167,7 @@ public class LinkedList<E> implements List<E> {
         private Node<T> next = null;
 
         private Node(T data) {
-            setData(data);
+            this.data = data;
         }
 
         private Node<T> getNext() {
@@ -204,7 +188,7 @@ public class LinkedList<E> implements List<E> {
 
         // read method is public
         public String toString() {
-            return getData().toString();
+            return this.data.toString();
         }
     } 
 }

@@ -2,10 +2,11 @@
 
 ## General Conventions
  - Using VS Code IDE Currently cause I am helping a Friend.
+ - Download and Install [VS Code](https://code.visualstudio.com/)
+ - Working in MacOS(BSD) Environment
  - **If My code is used for cheating in School I am not Responsible!!!**
 
 ## Java
- - Download and Install [VS Code](https://code.visualstudio.com/)
  - In VS Code install "Java Extension Pack" Extension
  - Fork this repo in Github and clone to your dev machine...where vs code is installed.
  - In VS Code open open the cloned DataStructures Folder.
@@ -17,7 +18,9 @@
  - Download and install [Java JDK14 from Oracle](https://www.oracle.com/java/technologies/javase-jdk14-downloads.html) which is the newset.
 
 ## C++
- - TODO
+ - In VS Code install "(C++ Extension Pack)[https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools]" Extension
+   there are a couple different ones but this should help find a good one, the one I am using.
+ - 
 
 ## Python
  - TODO
