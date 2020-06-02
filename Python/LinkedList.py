@@ -1,6 +1,3 @@
-#!/usr/bin/env python3.7
-
-
 # Need this because python does not support inheritence
 # very well natively
 # https://docs.python.org/3.7/library/abc.html
@@ -138,25 +135,3 @@ class LinkedList(List):
             raise Exception("Cannot add None values to the List!")
 
         return containsRecursive(self.head, data)
-
-
-# Start
-ll = LinkedList()
-print(ll.empty())
-print(ll.size())
-
-ll.add("String0")
-print(ll.empty())
-print(ll.size())
-
-ll.add("String1")
-print(ll.empty())
-print(ll.size())
-
-print(ll.contains("String0"))
-print(ll.contains("String1"))
-print(ll.contains("String2"))  # False
-
-
-print(ll.containsRecursive("String1"))
-print(ll.containsRecursive("String2"))  # False

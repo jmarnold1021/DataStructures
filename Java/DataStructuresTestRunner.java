@@ -8,7 +8,7 @@ import org.junit.*;
 
 // for Assert Methods
 // http://junit.sourceforge.net/javadoc/org/junit/Assert.html
-// for exception handeling
+// for exception handleing
 // https://www.baeldung.com/junit-assert-exception
 import static org.junit.Assert.*;
 
