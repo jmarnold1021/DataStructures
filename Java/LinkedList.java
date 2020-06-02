@@ -35,10 +35,55 @@ public class LinkedList<E> implements List<E> {
         return false;
     }
 
+    //https://docs.oracle.com/javase/8/docs/api/java/util/List.html#contains-java.lang.Object-
     @Override
     public boolean contains(Object o) {
-        // TODO Auto-generated method stub
+
+        if( o == null ){
+            throw new NullPointerException();
+        }
+
+        if( this.size == 0 ) {
+            return true;
+        }
+
+        if( this.head.contains(o) ){
+            return true;
+        }
+        
+        Node<E> tmp = this.head.getNext();
+
+        while( tmp != null ) {
+
+            if( tmp.contains(o) ) {
+                return true;
+            }
+
+            tmp = tmp.getNext();
+        }
         return false;
+    }
+
+    public boolean containsRecursiveExample(Object o){
+
+        if( o == null ) {
+            throw new NullPointerException();
+        }
+
+        return containsRecursiveExample(this.head, o);
+    }
+
+    private boolean containsRecursiveExample(Node<E> n, Object o){
+        
+        if( n.contains(o) ){
+            return true;
+        }
+
+        if( n.getNext() == null ){
+            return false;
+        }
+
+        return containsRecursiveExample(n.getNext(), o);
     }
 
     @Override
@@ -61,8 +106,24 @@ public class LinkedList<E> implements List<E> {
 
     @Override
     public boolean add(E e) {
-        // TODO Auto-generated method stub
-        return false;
+        
+        if( e == null ) {
+            throw new NullPointerException();
+        }
+
+        Node<E> tmp = new Node<E>(e);
+
+        if( this.size == 0 ) {
+            this.head = tmp;
+            this.tail = this.head;
+        } else {
+            this.tail.setNext(tmp);
+            this.tail = this.tail.getNext();
+        }
+
+        ++this.size;
+        return true;
+        
     }
 
     @Override
@@ -184,6 +245,10 @@ public class LinkedList<E> implements List<E> {
 
         private void setData(T data) {
             this.data = data;
+        }
+
+        private boolean contains(Object o){
+            return this.data.equals(data);
         }
 
         // read method is public

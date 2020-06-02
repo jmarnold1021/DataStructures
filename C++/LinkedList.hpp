@@ -1,10 +1,10 @@
-#ifndef MYLINKEDLIST_HPP
-#define MYLINKEDLIST_HPP
+#ifndef LINKEDLIST_HPP
+#define LINKEDLIST_HPP
 #include <iostream>
 #include <stdexcept>
 
 template<typename Data>
-class MyLinkedList{
+class LinkedList{
 
   
   private:  
@@ -16,45 +16,47 @@ class MyLinkedList{
         Node<T>* next;
     };
 		
-		Node<Data>* head;
+    Node<Data>* head;
     Node<Data>* tail;
     int size;
 		
   public:
-	  //Default constructor
-    MyLinkedList() : head(nullptr), tail(nullptr), size(0){}
-    
-		//Copy constructor
-    MyLinkedList(const MyLinkedList<Data> &src){
-      
-		  if(src.head){
-			  this->size = src.size;
-				
-			  Node<Data>* src_tmp = src.head;
-			  this->head = new Node<Data>(src_tmp->data);
-				this->tail = this->head;
+
+    //Default constructor
+    LinkedList() : head(nullptr), tail(nullptr), size(0){}
+
+    //Copy constructor
+    LinkedList(const LinkedList<Data> &src){
+
+      if(src.head){
+        this->size = src.size;
+
+        Node<Data>* src_tmp = src.head;
+        this->head = new Node<Data>(src_tmp->data);
+        this->tail = this->head;
+
         while( src_tmp != src.tail){
 					
-					src_tmp = src_tmp->next;
-				  (this->tail)->next = new Node<Data>(src_tmp->data);
-					this->tail = (this->tail)->next;
-				}
-      }
-			else{// given an empty list list
+          src_tmp = src_tmp->next;
+          (this->tail)->next = new Node<Data>(src_tmp->data);
+          this->tail = (this->tail)->next;
+        }
+      } else {// given an empty list list
+
         this->head = nullptr;
-				this->tail = nullptr;
-			  this->size = 0;
-			}
-		}
+        this->tail = nullptr;
+        this->size = 0;
+      }
+    }
 		
 
-    virtual ~MyLinkedList(){ //virtual so that classes extending MyLinkedList
+    virtual ~LinkedList(){ //virtual so that classes extending LinkedList
                              //can redefine the destructor
                              //i.e override the destructor
 
       if(head){   //size at least 1
-        std::cout<<"destructing oll mll"<<std::endl; 
-				std::cout<<size<<std::endl;
+        //std::cout<<"destructing oll mll"<<std::endl;
+        //std::cout<<size<<std::endl;
         while(head != tail){  //do not base end on whether or not tmp = null!!!!!!
           Node<Data>* tmp = head->next;
           delete head;
@@ -64,7 +66,7 @@ class MyLinkedList{
       }
     }
 
-    virtual const Data & access(int pos) const{//searches from head to tail
+    virtual const Data & access(int pos) const{  //searches from head to tail
 
       if(pos >= (this -> size)){ //throw out of bounds exception
         throw std::out_of_range( "Given position is outside of the List's Size" );
@@ -148,6 +150,7 @@ class MyLinkedList{
 
         prev = prev -> next;
       }
+      
       delete tail;
       this -> tail = prev;
       --(this -> size);
@@ -167,39 +170,42 @@ class MyLinkedList{
       return ((this -> tail) -> data);
     }
     
-		//
-		MyLinkedList<Data>& operator=(const MyLinkedList<Data> &src){
-      if(this == &src){
-			  return *this;		
-			}
-		 if(src.head){
-		    this->~MyLinkedList<int>();
-			  this->size = src.size;
-				
-			  Node<Data>* src_tmp = src.head;
-			  this->head = new Node<Data>(src_tmp->data);
-				this->tail = this->head;
-        while( src_tmp != src.tail){
-					
-					src_tmp = src_tmp->next;
-				  (this->tail)->next = new Node<Data>(src_tmp->data);
-					this->tail = (this->tail)->next;
-				}
-				return *this;
-				
-      }
-			else{// given an empty list list
-        this->head = nullptr;
-				this->tail = nullptr;
-			  this->size = 0;
-				return *this;
-			}
-		}
+    LinkedList<Data>& operator=(const LinkedList<Data> &src){
 
- };
+      if(this == &src){
+        return *this;
+      }
+
+      if(src.head){
+
+        this->~LinkedList<int>();
+        this->size = src.size;
+
+        Node<Data>* src_tmp = src.head;
+        this->head = new Node<Data>(src_tmp->data);
+        this->tail = this->head;
+
+        while( src_tmp != src.tail){
+
+          src_tmp = src_tmp->next;
+          (this->tail)->next = new Node<Data>(src_tmp->data);
+          this->tail = (this->tail)->next;
+        }
+
+        return *this;
+
+      } else {// given an empty list list
+
+        this->head = nullptr;
+        this->tail = nullptr;
+        this->size = 0;
+        return *this;
+      }
+    }
+  };
 
 template<typename Data>
-std::ostream & operator<<(std::ostream &stm, const MyLinkedList<Data> &n ) {//no implicit 1st parameter
+std::ostream & operator<<(std::ostream &stm, const LinkedList<Data> &n ) {//no implicit 1st parameter
                                                                             //since this is not a mem func
    return n.buildStream(stm);
 
