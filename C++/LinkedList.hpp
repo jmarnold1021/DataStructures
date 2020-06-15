@@ -3,84 +3,116 @@
 #include <iostream>
 #include <stdexcept>
 
+using namespace std;
+
 template<typename Data>
 class LinkedList{
 
-  
+
   private:  
     template<typename T>//variable type T will be filled with data variable type
     class Node{
+
       public:
         Node( const Data &d ) : data(d), next(nullptr) {}
+
+        Data getData() const {
+          return this->data; 
+        }
+
+        Node<T>* getNext() const {
+          return this->next;
+        }
+
         const Data data;
         Node<T>* next;
     };
-		
+
     Node<Data>* head;
     Node<Data>* tail;
-    int size;
+    int length;
+
+    Node<Data>* getHead() const {
+      return this -> head;
+    }
+
+    Node<Data>* getTail() const {
+      return this -> tail;
+    }
 		
   public:
 
     //Default constructor
-    LinkedList() : head(nullptr), tail(nullptr), size(0){}
+    LinkedList() : head(nullptr), tail(nullptr), length(0){
+      cout<<"Created List: "<<this<<endl;
+    }
 
     //Copy constructor
     LinkedList(const LinkedList<Data> &src){
 
-      if(src.head){
-        this->size = src.size;
+      if( !src.isEmpty() ){
 
-        Node<Data>* src_tmp = src.head;
-        this->head = new Node<Data>(src_tmp->data);
+        this->head = new Node<Data>(src.getHead()->getData());
         this->tail = this->head;
+        ++(this -> length);
 
-        while( src_tmp != src.tail){
+        Node<Data>* src_tmp = src.getHead();
+        while( src_tmp != src.getTail() ){
 					
-          src_tmp = src_tmp->next;
-          (this->tail)->next = new Node<Data>(src_tmp->data);
+          src_tmp = src_tmp->getNext();
+          (this->tail)->next = new Node<Data>(src_tmp->getData());
           this->tail = (this->tail)->next;
+          ++(this -> length);
         }
-      } else {// given an empty list list
+      } else { // given an empty list
 
         this->head = nullptr;
         this->tail = nullptr;
-        this->size = 0;
+        this->length = 0;
       }
+
+      cout<<"Created List: "<<this<<endl;
     }
-		
 
     virtual ~LinkedList(){ //virtual so that classes extending LinkedList
-                             //can redefine the destructor
-                             //i.e override the destructor
+                           //can redefine the destructor
+                           //i.e override the destructor
 
-      if(head){   //size at least 1
-        //std::cout<<"destructing oll mll"<<std::endl;
-        //std::cout<<size<<std::endl;
-        while(head != tail){  //do not base end on whether or not tmp = null!!!!!!
-          Node<Data>* tmp = head->next;
-          delete head;
-          head = tmp;
+      cout<<"Destructing List: "<<this<<endl;
+
+      if(this->head){  //length at least 1
+
+        while(this->head != this->tail){  //do not base end on whether or not tmp = null!!!!!!
+          Node<Data>* tmp = (this->head)->next;
+          delete this->head;
+          this->head = tmp;
         }
-        delete head;
+
+        delete this->head;
       }
+
+      this -> length = 0;
+      this -> head = nullptr;
+      this -> tail = nullptr;
     }
 
+    
+    
     virtual const Data & access(int pos) const{  //searches from head to tail
 
-      if(pos >= (this -> size)){ //throw out of bounds exception
+      if(pos >= (this -> length)){ //throw out of bounds exception
         throw std::out_of_range( "Given position is outside of the List's Size" );
       }
 
       if(pos == 0){
-        return head -> data;
+        return (this -> head) -> data;
       }
 
-      if(pos == (this -> size) - 1 ){
-        return tail -> data;
+      if( pos == (this -> length) - 1 ){
+        return (this -> tail) -> data;
       }
 
-      Node<Data>* tmp = head;
+      Node<Data>* tmp = this -> head;
       for(int i = 1 ; i <= pos ; ++i){
         tmp = tmp -> next;
       }
@@ -92,9 +124,9 @@ class LinkedList{
       Node<Data>* start = (this -> head);
                                                          //i.e. tells the compiler that the function will
       stm << '[';                                        //     not change the const object
-      for(int i = 0 ; i < (this -> size) ; ++i){
+      for(int i = 0 ; i < (this -> length) ; ++i){
 
-        if( i != ((this -> size) - 1) ){
+        if( i != ((this -> length) - 1) ){
 
          stm<<(start -> data);
          stm<<", ";
@@ -110,21 +142,31 @@ class LinkedList{
       return stm;
     }
 
+    virtual bool isEmpty() const {
+      if( this -> length == 0 ) {
+        return true;
+      }
+      return false;
+    }
+
+    virtual int size() const {
+      return this -> length;
+    }
+
     //adds to the back of the list
     virtual void add( const Data &data ){
 
       //since data field is const it must be initialized through the constructor!!!
-      if(size == 0){ //if size = 0 set up head and adjust tail
+      if( !(this -> head) ){
 
         (this -> head) = new Node<Data>(data);
         (this -> tail) = (this -> head);
-      }
-      else{
+      } else {
 
         ((this -> tail) -> next) = new Node<Data>(data);// only adjust tail
         this->tail = (this -> tail)->next;
       }
-      ++(this -> size);
+      ++(this -> length);
     }
 
 
@@ -134,7 +176,7 @@ class LinkedList{
       Node<Data>* tmp = (this -> head -> next); //find next node for head
       delete head;
       (this -> head) = tmp;
-      --(this -> size);
+      --(this -> length);
 
       return data;
 
@@ -153,7 +195,7 @@ class LinkedList{
       
       delete tail;
       this -> tail = prev;
-      --(this -> size);
+      --(this -> length);
       return data;
 
     }
@@ -161,13 +203,13 @@ class LinkedList{
 
     virtual const Data & getFirstElement() const{
 
-      return ((this -> head) -> data);
+      return (this -> head) -> data;
     }
 
 
     virtual const Data & getLastElement() const{
 
-      return ((this -> tail) -> data);
+      return (this -> tail) -> data;
     }
     
     LinkedList<Data>& operator=(const LinkedList<Data> &src){
@@ -176,32 +218,33 @@ class LinkedList{
         return *this;
       }
 
-      if(src.head){
+      cout<<"Created List: "<<this<<endl;
 
-        this->~LinkedList<int>();
-        this->size = src.size;
+      if( !src.isEmpty() ){
 
-        Node<Data>* src_tmp = src.head;
-        this->head = new Node<Data>(src_tmp->data);
+        this->~LinkedList<Data>();
+        this->head = new Node<Data>( src.getHead()->getData() );
         this->tail = this->head;
+        ++(this -> length);
 
-        while( src_tmp != src.tail){
-
-          src_tmp = src_tmp->next;
-          (this->tail)->next = new Node<Data>(src_tmp->data);
+        Node<Data>* src_tmp = src.getHead();
+        while( src_tmp != src.getTail() ){
+					
+          src_tmp = src_tmp->getNext();
+          (this->tail)->next = new Node<Data>(src_tmp->getData());
           this->tail = (this->tail)->next;
+          ++(this -> length);
         }
 
         return *this;
-
-      } else {// given an empty list list
-
-        this->head = nullptr;
-        this->tail = nullptr;
-        this->size = 0;
-        return *this;
       }
+
+      this->head = nullptr;
+      this->tail = nullptr;
+      this->length = 0;
+      return *this;  
     }
+    
   };
 
 template<typename Data>

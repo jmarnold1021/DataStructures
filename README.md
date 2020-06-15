@@ -5,6 +5,12 @@
  - Download and Install [VS Code](https://code.visualstudio.com/)
  - Working in MacOS(BSD) Environment
  - **If My code is used for cheating in School I am not Responsible!!!**
+ - [VSCode User and Workspace Settings overview](https://code.visualstudio.com/docs/getstarted/settings)
+ - Usually would not commit the env/ide configs but since they are in there own top level folder
+   the code can just be pulled out of each repective language folder and reconfigured for different
+   environments. I don't want to have to re-remember all this vs code stuff.
+ - [Git Commit message conventions](https://eslint.org/docs/developer-guide/contributing/pull-requests#step-2-make-your-changes) I usually use these to
+   maintain good habits but usually ignored unless adopted by many...
 
 ## Java
  - In VS Code install "Java Extension Pack" Extension
@@ -22,46 +28,14 @@
    there are a couple different ones but this should help find a good one, the one I am using.
  -  Follow [VS Code Clang Tutorial](https://code.visualstudio.com/docs/cpp/config-clang-mac)
     Except for the prjects and hellow world creation since that is the C++ dir.
-
  - tasks.json example
-```javascript
-# tasks.json example...
-{
-  // See https://go.microsoft.com/fwlink/?LinkId=733558
-  // for the documentation about the tasks.json format
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "type": "shell",
-      "label": "clang++ build active file",
-      "command": "/usr/bin/clang++",
-      "args": [
-        "-std=c++17",
-        "-stdlib=libc++",
-        "-g",
-        "${workspaceFolder}/C++/*.cpp",
-        "-o",
-        "${workspaceFolder}/C++/bin/${fileBasenameNoExtension}"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}/C++"
-      },
-      "problemMatcher": ["$gcc"],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      }
-    }
-  ]
-}
-```
-
-- Build with Shift+CMD+B and run the executable created in C++/bin using the VSCode Terminal
+ - Build with Shift+CMD+B and run the executable created in C++/bin using the VSCode Terminal
 
 
 ## Python
  - In VS Code install "Python Extension Pack" Extension
  - Working with it is pretty much explained in the Extension details.
+ - Note the .env file config necessary for properly importing custom modules
 
 
 ## Node.js

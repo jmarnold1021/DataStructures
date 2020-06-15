@@ -27,9 +27,6 @@ class List(metaclass=ABCMeta):
     def contains(self, data):
         pass
 
-    '''
-    # If you uncomment these and they are not implemented in
-    # the derived class will break...
     @abstractmethod
     def get(self, idx):
         pass
@@ -37,7 +34,6 @@ class List(metaclass=ABCMeta):
     @abstractmethod
     def remove(self, data):
         pass
-    '''
 
 
 # Derived class
@@ -120,7 +116,7 @@ class LinkedList(List):
 
     def containsRecursive(self, data):
 
-        # private helper method
+        # private helper method hides node objs
         def containsRecursive(node, data):
 
             if node.contains(data):
@@ -135,3 +131,9 @@ class LinkedList(List):
             raise Exception("Cannot add None values to the List!")
 
         return containsRecursive(self.head, data)
+
+    def get(self, idx):
+        pass
+
+    def remove(self, data):
+        pass

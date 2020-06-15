@@ -8,8 +8,10 @@ import org.junit.*;
 
 // for Assert Methods
 // http://junit.sourceforge.net/javadoc/org/junit/Assert.html
-// for exception handleing
+// for exception handleing...
 // https://www.baeldung.com/junit-assert-exception
+// hooks...
+// https://stackoverflow.com/questions/82949/before-and-after-suite-execution-hook-in-junit-4-x
 import static org.junit.Assert.*;
 
 // for initial TestRunner...Testing without our stuff.
