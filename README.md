@@ -12,6 +12,7 @@
  - [Git Commit message conventions](https://eslint.org/docs/developer-guide/contributing/pull-requests#step-2-make-your-changes) I usually use these to
    maintain good habits but usually ignored unless adopted by many...
 
+
 ## Java
  - In VS Code install "Java Extension Pack" Extension
  - Fork this repo in Github and clone to your dev machine...where vs code is installed.
@@ -23,19 +24,21 @@
 **If still receiving errors may need to manually install JDK first I did this first and everything else worked.**
  - Download and install [Java JDK14 from Oracle](https://www.oracle.com/java/technologies/javase-jdk14-downloads.html) which is the newset.
 
+
 ## C++
  - In VS Code install [C++ Extension Pack](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools) Extension
    there are a couple different ones but this should help find a good one, the one I am using.
  -  Follow [VS Code Clang Tutorial](https://code.visualstudio.com/docs/cpp/config-clang-mac)
     Except for the prjects and hellow world creation since that is the C++ dir.
- - tasks.json example
- - Build with Shift+CMD+B and run the executable created in C++/bin using the VSCode Terminal
+ - Build with Shift+CMD+B while DataStructuresTestRunner.cpp is selected,
+   and run the executable created in C++/bin using the VSCode Terminal
 
 
 ## Python
  - In VS Code install "Python Extension Pack" Extension
  - Working with it is pretty much explained in the Extension details.
  - Note the .env file config necessary for properly importing custom modules
+ - Note the "python.envFile" value in settings.json
 
 
 ## Node.js

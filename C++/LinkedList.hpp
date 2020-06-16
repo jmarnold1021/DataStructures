@@ -3,10 +3,11 @@
 #include <iostream>
 #include <stdexcept>
 
+
 using namespace std;
 
 template<typename Data>
-class LinkedList{
+class LinkedList {
 
 
   private:  
@@ -44,14 +45,21 @@ class LinkedList{
 
     //Default constructor
     LinkedList() : head(nullptr), tail(nullptr), length(0){
-      cout<<"Created List: "<<this<<endl;
+      cout<<"Created List(default): "<<this<<endl;
     }
+
 
     //Copy constructor
     LinkedList(const LinkedList<Data> &src){
 
-      if( !src.isEmpty() ){
+      // this->length may have garbage values hence the explict
+      // defaults
+      this->head = nullptr;
+      this->tail = nullptr;
+      this->length = 0;
 
+      if( !src.isEmpty() ){
+        
         this->head = new Node<Data>(src.getHead()->getData());
         this->tail = this->head;
         ++(this -> length);
@@ -64,31 +72,30 @@ class LinkedList{
           this->tail = (this->tail)->next;
           ++(this -> length);
         }
-      } else { // given an empty list
+      } 
 
-        this->head = nullptr;
-        this->tail = nullptr;
-        this->length = 0;
-      }
-
-      cout<<"Created List: "<<this<<endl;
+      cout<<"Created List(copy): "<<this<<endl;
     }
+
+
+
 
     virtual ~LinkedList(){ //virtual so that classes extending LinkedList
                            //can redefine the destructor
                            //i.e override the destructor
 
       cout<<"Destructing List: "<<this<<endl;
+      this -> empty();
+    }
 
-      if(this->head){  //length at least 1
+    
 
-        while(this->head != this->tail){  //do not base end on whether or not tmp = null!!!!!!
-          Node<Data>* tmp = (this->head)->next;
-          delete this->head;
-          this->head = tmp;
-        }
+    virtual void empty() {
 
+      while(this->head != nullptr){  
+        Node<Data>* tmp = (this -> head) -> next;
         delete this->head;
+        this->head = tmp;
       }
 
       this -> length = 0;
@@ -96,8 +103,8 @@ class LinkedList{
       this -> tail = nullptr;
     }
 
-    
-    
+
+
     virtual const Data & access(int pos) const{  //searches from head to tail
 
       if(pos >= (this -> length)){ //throw out of bounds exception
@@ -119,6 +126,8 @@ class LinkedList{
 
       return tmp -> data;
     }
+
+
 
     std::ostream & buildStream(std::ostream & stm) const{// const allows function to be called by const objects
       Node<Data>* start = (this -> head);
@@ -142,6 +151,8 @@ class LinkedList{
       return stm;
     }
 
+
+
     virtual bool isEmpty() const {
       if( this -> length == 0 ) {
         return true;
@@ -149,14 +160,17 @@ class LinkedList{
       return false;
     }
 
+
+
     virtual int size() const {
       return this -> length;
     }
 
-    //adds to the back of the list
+
+
     virtual void add( const Data &data ){
 
-      //since data field is const it must be initialized through the constructor!!!
+      // since data field is const it must be initialized through the constructor!!!
       if( !(this -> head) ){
 
         (this -> head) = new Node<Data>(data);
@@ -170,6 +184,7 @@ class LinkedList{
     }
 
 
+
     virtual const Data removeFront(){
 
       const Data data = ((this -> head) -> data);//store heads data
@@ -181,6 +196,7 @@ class LinkedList{
       return data;
 
     }
+
 
 
     virtual const Data removeBack(){
@@ -201,28 +217,38 @@ class LinkedList{
     }
 
 
+
     virtual const Data & getFirstElement() const{
 
       return (this -> head) -> data;
     }
 
 
+
     virtual const Data & getLastElement() const{
 
       return (this -> tail) -> data;
     }
-    
+
+
+
     LinkedList<Data>& operator=(const LinkedList<Data> &src){
 
       if(this == &src){
+        cout<<"Return/Assign duplicate list: "<<this<<endl;
         return *this;
       }
 
-      cout<<"Created List: "<<this<<endl;
+      // this operator function is only called if "this" is not empty
+      // but to be safe going to check anyway
+      if( !this -> isEmpty() ){
+        cout<<"Empty/Assign new list: "<<this<<endl;
+        this -> empty();
+      }
 
       if( !src.isEmpty() ){
 
-        this->~LinkedList<Data>();
+        
         this->head = new Node<Data>( src.getHead()->getData() );
         this->tail = this->head;
         ++(this -> length);
@@ -235,16 +261,12 @@ class LinkedList{
           this->tail = (this->tail)->next;
           ++(this -> length);
         }
-
-        return *this;
       }
-
-      this->head = nullptr;
-      this->tail = nullptr;
-      this->length = 0;
-      return *this;  
+      return *this;
     }
-    
+
+
+
   };
 
 template<typename Data>
