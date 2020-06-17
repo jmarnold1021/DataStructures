@@ -11,20 +11,11 @@ class LinkedList {
 
 
   private:  
-    template<typename T>//variable type T will be filled with data variable type
+    template<typename T> // variable type T will be filled with Data variable type
     class Node{
 
       public:
         Node( const Data &d ) : data(d), next(nullptr) {}
-
-        Data getData() const {
-          return this->data; 
-        }
-
-        Node<T>* getNext() const {
-          return this->next;
-        }
-
         const Data data;
         Node<T>* next;
     };
@@ -50,33 +41,34 @@ class LinkedList {
 
 
     //Copy constructor
-    LinkedList(const LinkedList<Data> &src){
+    LinkedList(const LinkedList<Data> &src) {
 
-      // this->length may have garbage values hence the explict
-      // defaults
-      this->head = nullptr;
-      this->tail = nullptr;
-      this->length = 0;
+      // this->* may have garbage values hence the explict defaults
+      // before building the list.
+      // https://www.quora.com/What-do-you-mean-by-a-garbage-value-in-a-variable#:~:text=Allocating%20a%20variable%20implies%20reserving,piece%20of%20the%20computer's%20memory.
+      this -> head = nullptr;
+      this -> tail = nullptr;
+      this -> length = 0;
 
       if( !src.isEmpty() ){
         
-        this->head = new Node<Data>(src.getHead()->getData());
-        this->tail = this->head;
+        // 1st element
+        Node<Data>* itr = src.getHead();
+        this -> tail = new Node<Data>(itr -> data);
+        this -> head = this -> tail;
         ++(this -> length);
+        itr = itr -> next;
 
-        Node<Data>* src_tmp = src.getHead();
-        while( src_tmp != src.getTail() ){
-					
-          src_tmp = src_tmp->getNext();
-          (this->tail)->next = new Node<Data>(src_tmp->getData());
-          this->tail = (this->tail)->next;
+        // rest of elements
+        while( itr != nullptr ){
+          (this -> tail) -> next = new Node<Data>(itr -> data);
+          this -> tail = (this -> tail) -> next;
           ++(this -> length);
+          itr = itr -> next;
         }
-      } 
-
+      }
       cout<<"Created List(copy): "<<this<<endl;
     }
-
 
 
 
@@ -105,10 +97,14 @@ class LinkedList {
 
 
 
-    virtual const Data & access(int pos) const{  //searches from head to tail
+    virtual const Data access(int pos) const{  //searches from head to tail O(n - 1)
 
-      if(pos >= (this -> length)){ //throw out of bounds exception
-        throw std::out_of_range( "Given position is outside of the List's Size" );
+      // https://en.cppreference.com/w/cpp/language/ub
+      // https://stackoverflow.com/questions/60943480/what-does-c-stdlistfront-return-with-an-empty-list
+      // https://en.wiktionary.org/wiki/PEBCAK
+      // atm this check is a place holder for nice TestSuite Functionality
+      if( pos >= (this -> length) ){
+        throw out_of_range( "Given position is outside of the List's Size" );
       }
 
       if(pos == 0){
@@ -129,24 +125,27 @@ class LinkedList {
 
 
 
-    std::ostream & buildStream(std::ostream & stm) const{// const allows function to be called by const objects
-      Node<Data>* start = (this -> head);
-                                                         //i.e. tells the compiler that the function will
-      stm << '[';                                        //     not change the const object
-      for(int i = 0 ; i < (this -> length) ; ++i){
+    ostream & buildStream(ostream & stm) const{// const allows function to be called by const objects
+                                                         // i.e. tells the compiler that the function will
+                                                         // not change the const object
 
-        if( i != ((this -> length) - 1) ){
-
-         stm<<(start -> data);
-         stm<<", ";
-        }
-        else{
-
-         stm<<(start -> data);
-        }
-        start = (start -> next);
+      // empty
+      if( this -> head == nullptr){
+        return stm << "[]";
       }
 
+      // more than 1 element
+      stm << '[';
+      Node<Data>* itr = this -> head;
+      while( itr -> next != nullptr ){
+        
+        stm << itr -> data;
+        stm << ", ";
+        itr = itr -> next;
+      }
+
+      // 1 or last element
+      stm << itr -> data;
       stm << ']';
       return stm;
     }
@@ -154,7 +153,7 @@ class LinkedList {
 
 
     virtual bool isEmpty() const {
-      if( this -> length == 0 ) {
+      if( this -> head == nullptr ) {
         return true;
       }
       return false;
@@ -168,64 +167,92 @@ class LinkedList {
 
 
 
-    virtual void add( const Data &data ){
+    virtual void add( const Data &data ){ // O(1)
 
       // since data field is const it must be initialized through the constructor!!!
-      if( !(this -> head) ){
 
-        (this -> head) = new Node<Data>(data);
-        (this -> tail) = (this -> head);
+      Node<Data>* newNode = new Node<Data>(data);
+
+      if( this -> head == nullptr ) {
+
+        this -> tail = newNode;
+        this -> head = this -> tail;
       } else {
 
-        ((this -> tail) -> next) = new Node<Data>(data);// only adjust tail
-        this->tail = (this -> tail)->next;
+        (this -> tail) -> next = newNode;
+        this -> tail = (this -> tail) -> next;
       }
       ++(this -> length);
     }
 
 
 
-    virtual const Data removeFront(){
+    virtual const Data removeFront(){ // O(1)
 
-      const Data data = ((this -> head) -> data);//store heads data
-      Node<Data>* tmp = (this -> head -> next); //find next node for head
-      delete head;
-      (this -> head) = tmp;
+      // https://en.cppreference.com/w/cpp/language/ub
+      // https://stackoverflow.com/questions/60943480/what-does-c-stdlistfront-return-with-an-empty-list
+      // https://en.wiktionary.org/wiki/PEBCAK
+      // atm this check is a place holder for nice TestSuite Functionality
+      if( this -> head == nullptr ) {
+        throw out_of_range( "Cannot retrieve front of an Empty List" );
+      }
+
+      const Data data = (this -> head) -> data; //store heads data
+      Node<Data>* tmp = (this -> head) -> next; //find next node for head
+      delete this -> head;
+      this -> head = tmp;
       --(this -> length);
 
       return data;
-
     }
 
 
+    // this one is hard.
+    virtual const Data removeBack(){ // O(n)
 
-    virtual const Data removeBack(){
+      // https://en.cppreference.com/w/cpp/language/ub
+      // https://stackoverflow.com/questions/60943480/what-does-c-stdlistfront-return-with-an-empty-list
+      // https://en.wiktionary.org/wiki/PEBCAK
+      // ATM this check is a place holder for nice TestSuite Functionality
+      if( this -> head == nullptr ) {
+        throw out_of_range( "Cannot retrieve back of an Empty List" );
+      }
 
       const Data data = (this -> tail) -> data; //store tails data
 
-      Node<Data>* prev = (this -> head); //find next node for tail
-      while( (prev -> next) != tail){
+      if( this -> head == this -> tail){
+        delete this -> tail;
+        this -> head = nullptr;
+        this -> tail = nullptr;
+        --(this -> length);
+        return data;
 
-        prev = prev -> next;
       }
-      
-      delete tail;
-      this -> tail = prev;
+
+      Node<Data>* itr = this -> head; //find next node for tail
+      while( itr -> next != this -> tail ){
+        itr = itr -> next;
+      }
+      itr -> next = nullptr; // need to explicitly break this link
+                             // or future iterators(aka destructor) will
+                             // follow it.
+
+      delete this -> tail;
+      this -> tail = itr;
       --(this -> length);
       return data;
-
     }
 
 
 
-    virtual const Data & getFirstElement() const{
+    virtual const Data front() const{ // O(1)
 
       return (this -> head) -> data;
     }
 
 
 
-    virtual const Data & getLastElement() const{
+    virtual const Data back() const{ // O(1)
 
       return (this -> tail) -> data;
     }
@@ -234,6 +261,8 @@ class LinkedList {
 
     LinkedList<Data>& operator=(const LinkedList<Data> &src){
 
+      // pretty sure we should build a new list with same elements
+      // and reassign it to the same ref but...could go either way.
       if(this == &src){
         cout<<"Return/Assign duplicate list: "<<this<<endl;
         return *this;
@@ -247,31 +276,30 @@ class LinkedList {
       }
 
       if( !src.isEmpty() ){
-
         
-        this->head = new Node<Data>( src.getHead()->getData() );
-        this->tail = this->head;
-        ++(this -> length);
+        Node<Data>* itr = src.getHead();
 
-        Node<Data>* src_tmp = src.getHead();
-        while( src_tmp != src.getTail() ){
-					
-          src_tmp = src_tmp->getNext();
-          (this->tail)->next = new Node<Data>(src_tmp->getData());
-          this->tail = (this->tail)->next;
+        // 1st element
+        this -> tail = new Node<Data>(itr -> data);
+        this -> head = this -> tail;
+        ++(this -> length);
+        itr = itr -> next;
+
+        // rest of elements
+        while( itr != nullptr ){
+          (this -> tail) -> next = new Node<Data>(itr -> data);
+          this -> tail = (this -> tail) -> next;
           ++(this -> length);
+          itr = itr -> next;
         }
       }
       return *this;
     }
-
-
-
   };
 
 template<typename Data>
-std::ostream & operator<<(std::ostream &stm, const LinkedList<Data> &n ) {//no implicit 1st parameter
-                                                                            //since this is not a mem func
+ostream & operator<<(ostream &stm, const LinkedList<Data> &n ) {//no implicit 1st parameter
+                                                                //since this is not a mem func
    return n.buildStream(stm);
 
 }
