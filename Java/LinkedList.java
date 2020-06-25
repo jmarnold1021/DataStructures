@@ -20,6 +20,10 @@ public class LinkedList<E> implements List<E> {
     private Node<E> tail = head;
     private int size = 0;
    
+    private Node<E> getHead(){
+        return this.head;
+    }
+
     @Override
     public int size() {
         return this.size;
@@ -88,8 +92,32 @@ public class LinkedList<E> implements List<E> {
 
     @Override
     public Iterator<E> iterator() {
-        // TODO Auto-generated method stub
-        return null;
+
+        // https://stackoverflow.com/questions/355167/how-are-anonymous-inner-classes-used-in-java
+        return new Iterator<E>() {
+
+            Node<E> current = getHead();
+
+            @Override
+            public boolean hasNext() {
+                return current != null;
+            }
+
+            @Override
+            public E next() {
+                if( hasNext() ){
+                    E data = current.getData();
+                    current = current.getNext();
+                    return data;
+                }
+                return null;
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("Remove not implemented.");
+            }
+        };
     }
 
     @Override

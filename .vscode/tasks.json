@@ -11,7 +11,7 @@
         "-std=c++17",
         "-stdlib=libc++",
         "-g",
-        "${workspaceFolder}/C++/*.cpp",
+        "${workspaceFolder}/C++/DataStructuresTestRunner.cpp",
         "-o",
         "${workspaceFolder}/C++/bin/${fileBasenameNoExtension}"
       ],

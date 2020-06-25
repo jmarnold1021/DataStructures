@@ -16,6 +16,7 @@ import static org.junit.Assert.*;
 
 // for initial TestRunner...Testing without our stuff.
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.ArrayList;
 
 // Utilities
@@ -129,6 +130,22 @@ public class DataStructuresTestRunner
         assertTrue(added2);
         assertEquals(fixture.size(), 3);
         assertTrue(fixture.containsRecursiveExample("String2"));
+    }
+
+    @Test
+    public void testIterator() {
+
+        LinkedList<Integer> fixture = new LinkedList<Integer>();
+        fixture.add(0);
+        fixture.add(1);
+        fixture.add(2);
+
+        Iterator<Integer> itr = fixture.iterator();
+        int idx = 0;
+        while(itr.hasNext()){
+            assertEquals(itr.next().intValue(), idx);
+            ++idx;
+        }
     }
 
     @AfterClass
