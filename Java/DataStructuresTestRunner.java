@@ -257,8 +257,16 @@ public class DataStructuresTestRunner
         fixture.add(1);
         fixture.add(2);
 
-        Number[] array = fixture.toArray(new Number[1]);
-        System.out.println(array[0]);
+        Number[] array = fixture.toArray(new Number[4]);
+        assertEquals(array[0],0);
+        assertEquals(array[1],1);
+        assertEquals(array[2],2);
+        assertEquals(array[3],null);
+
+        Number[] array2 = fixture.toArray(new Number[1]);
+        assertEquals(array2[0],0);
+        assertEquals(array2[1],1);
+        assertEquals(array2[2],2);
     }
 
 

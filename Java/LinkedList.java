@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import java.util.Arrays;
 
 public class LinkedList<E> implements List<E> {
 
@@ -109,26 +110,27 @@ public class LinkedList<E> implements List<E> {
     }
 
     @Override
-    @SuppressWarnings("unchecked") // we check it...has to atleast be a super class
-    public <T> T[] toArray(T[] a) { //no idea on this one really but here goes...
-        // https://stackoverflow.com/questions/6522284/convert-a-generic-list-to-an-array
-        if( a == null) {
-            throw new NullPointerException();
+    @SuppressWarnings("unchecked")
+    public <T> T[] toArray(T[] a) {
+
+        // best solution I could find for this one...plus java src uses it ;)
+        if( this.size() > a.length ){
+            a = (T[]) java.lang.reflect.Array.newInstance(
+                a.getClass().getComponentType(), this.size());
         }
-        // some more things have to happen in the event of a larger
-        // passed array...but ya know getting there.
-        // also if array.length < this.size allocate new T[] of that size...
-        try{
-            Node<E> tmp = this.head;
-            for(int i = 0; i < a.length; ++i){
-                a[i] = (T) tmp.getData(); // has to at least be super.
-                tmp = tmp.getNext();
+        
+        Node<E> tmp = this.head;
+        for(int i = 0; i < a.length; ++i) {
+
+            a[i] = (T) tmp.getData(); // has to at least be super for every elem.
+            tmp = tmp.getNext();
+
+            if( tmp == null && a.length > this.size() ){
+                a[++i] = null;
+                break;
             }
-            return a;
         }
-        catch(ArrayStoreException e){
-            throw e;
-        }
+        return a;
     }
 
     @Override
