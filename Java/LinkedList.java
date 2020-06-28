@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
 public class LinkedList<E> implements List<E> {
 
@@ -93,43 +94,41 @@ public class LinkedList<E> implements List<E> {
     @Override
     public Iterator<E> iterator() {
 
-        // https://stackoverflow.com/questions/355167/how-are-anonymous-inner-classes-used-in-java
-        return new Iterator<E>() {
-
-            Node<E> current = getHead();
-
-            @Override
-            public boolean hasNext() {
-                return current != null;
-            }
-
-            @Override
-            public E next() {
-                if( hasNext() ){
-                    E data = current.getData();
-                    current = current.getNext();
-                    return data;
-                }
-                return null;
-            }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException("Remove not implemented.");
-            }
-        };
+        return new SinglyLinkedListIterator();
     }
 
     @Override
     public Object[] toArray() {
-        // TODO Auto-generated method stub
-        return null;
+
+        ListIterator<E> sllIterator= this.listIterator();
+        Object[] array = new Object[this.size()];
+        while(sllIterator.hasNext()){
+            array[sllIterator.nextIndex()] = sllIterator.next();
+        }
+        return array;
     }
 
     @Override
-    public <T> T[] toArray(T[] a) {
-        // TODO Auto-generated method stub
-        return null;
+    @SuppressWarnings("unchecked") // we check it...has to atleast be a super class
+    public <T> T[] toArray(T[] a) { //no idea on this one really but here goes...
+        // https://stackoverflow.com/questions/6522284/convert-a-generic-list-to-an-array
+        if( a == null) {
+            throw new NullPointerException();
+        }
+        // some more things have to happen in the event of a larger
+        // passed array...but ya know getting there.
+        // also if array.length < this.size allocate new T[] of that size...
+        try{
+            Node<E> tmp = this.head;
+            for(int i = 0; i < a.length; ++i){
+                a[i] = (T) tmp.getData(); // has to at least be super.
+                tmp = tmp.getNext();
+            }
+            return a;
+        }
+        catch(ArrayStoreException e){
+            throw e;
+        }
     }
 
     @Override
@@ -234,20 +233,96 @@ public class LinkedList<E> implements List<E> {
 
     @Override
     public ListIterator<E> listIterator() {
-        // TODO Auto-generated method stub
-        return null;
+        return new SinglyLinkedListIterator();
     }
 
     @Override
     public ListIterator<E> listIterator(int index) {
-        // TODO Auto-generated method stub
-        return null;
+
+        if( index < 0 || index > this.size() ){
+            throw new IndexOutOfBoundsException();
+        }
+
+        ListIterator<E> sllIterator = new SinglyLinkedListIterator();
+
+        while( sllIterator.nextIndex() != index ){
+            sllIterator.next();
+        }
+
+        return sllIterator;
     }
 
     @Override
     public List<E> subList(int fromIndex, int toIndex) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    
+    // https://docs.oracle.com/javase/7/docs/api/java/util/ListIterator.html#hasPrevious()
+    // Decided to implement ListIterator in order to handle
+    // all of List's iterator methods with a single class...
+
+    // Whoa not sure why we cannot parameterize LinkedListIterator
+    // but it works.
+    private class SinglyLinkedListIterator implements ListIterator<E> {
+
+        // variable names should highlight that
+        // ListIterator is always between nodes...
+        private Node<E> next = getHead();
+        private int nxtIndex = 0;
+
+        @Override
+        public boolean hasNext() {
+            return next != null;
+        }
+
+        @Override
+        public E next() {
+
+            if( !hasNext() ){
+                throw new NoSuchElementException();
+            }
+            E data = next.getData();
+            next = next.getNext();
+            ++nxtIndex;
+            return data;
+        }
+
+        @Override
+        public int nextIndex() {
+            return nxtIndex;
+        }
+
+        @Override
+        public void remove() { //provided through List
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(E e) { //provided through List
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void add(E e) { //provided through List
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean hasPrevious() { //single link
+            throw new NoSuchElementException();
+        }
+
+        @Override
+        public E previous() { //single link
+            throw new NoSuchElementException();
+        }
+
+        @Override
+        public int previousIndex() { //single link
+            throw new NoSuchElementException();
+        }   
     }
 
     private class Node<T> {
