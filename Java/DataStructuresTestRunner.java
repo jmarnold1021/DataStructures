@@ -91,6 +91,25 @@ public class DataStructuresTestRunner
     }
 
     @Test
+    public void testLinkedListToString() {
+
+        LinkedList<String> fixture = new LinkedList<String>();
+        fixture.add("bill");
+        fixture.add("ted");
+        fixture.add("joe");
+        fixture.add("charles");
+        fixture.add("amy");
+        assertEquals(fixture.toString(), "[bill, ted, joe, charles, amy]");
+
+        LinkedList<String> fixture2 = new LinkedList<String>();
+        fixture2.add("bill");
+        assertEquals(fixture2.toString(), "[bill]");
+
+        LinkedList<String> fixture3 = new LinkedList<String>();
+        assertEquals(fixture3.toString(), "[]");
+    }
+
+    @Test
     public void testLinkedListContains() {
 
         LinkedList<String> fixture = new LinkedList<String>();
@@ -132,6 +151,67 @@ public class DataStructuresTestRunner
         assertTrue(added2);
         assertEquals(fixture.size(), 3);
         assertTrue(fixture.containsRecursiveExample("String2"));
+    }
+
+    @Test
+    public void testLinkedListRemoveObject() {
+
+        LinkedList<String> fixture = new LinkedList<String>();
+        fixture.add("bill");
+        fixture.add("ted");
+        fixture.add("joe");
+        fixture.add("charles");
+        fixture.add("amy");
+        fixture.add("joe");
+        
+        assertTrue(fixture.contains("bill"));
+        assertTrue(fixture.contains("ted"));
+        assertTrue(fixture.contains("joe"));
+        assertTrue(fixture.contains("charles"));
+        assertTrue(fixture.contains("amy"));
+        assertTrue(fixture.contains("joe"));
+        assertEquals(fixture.size(), 6);
+
+        fixture.remove("bill");
+        assertFalse(fixture.contains("bill"));
+        assertEquals(fixture.size(), 5);
+
+        fixture.remove("joe");
+        assertTrue(fixture.contains("joe")); // 2 joes...
+        assertEquals(fixture.size(), 4);
+
+        fixture.remove("joe");
+        assertFalse(fixture.contains("joe"));
+        assertEquals(fixture.size(), 3);
+
+        fixture.remove("marc");
+        assertTrue(fixture.contains("ted"));
+        assertTrue(fixture.contains("charles"));
+        assertTrue(fixture.contains("amy"));
+        assertFalse(fixture.contains("marc"));
+        assertEquals(fixture.size(), 3);
+        
+        fixture.remove("charles");
+        assertFalse(fixture.contains("charles"));
+        assertEquals(fixture.size(), 2);
+
+        fixture.remove("ted");
+        assertFalse(fixture.contains("ted"));
+        assertEquals(fixture.size(), 1);
+
+        fixture.remove("marc");
+        assertTrue(fixture.contains("amy"));
+        assertEquals(fixture.size(), 1);
+
+        fixture.remove("amy");
+        assertFalse(fixture.contains("amy"));
+        assertEquals(fixture.size(), 0);
+        assertTrue(fixture.isEmpty());
+
+        fixture.remove("amy");
+        assertFalse(fixture.contains("amy"));
+        assertEquals(fixture.size(), 0);
+        assertTrue(fixture.isEmpty()); 
     }
 
     @Test
@@ -208,14 +288,14 @@ public class DataStructuresTestRunner
         fixture.add(1);
         fixture.add(2);
 
-        ListIterator<Integer> ib = fixture.listIterator(3);
-        assertEquals(ib.hasNext(), false);
+        ListIterator<Integer> inBounds = fixture.listIterator(3);
+        assertEquals(inBounds.hasNext(), false);
         // 3 is still a valid position where a subsequent call to
         // next throws a NoSuchElementException...see below test.
         // 4 however is out of bounds since no element exists
         // between 3 and 4...head scramble...!!!
 
-        ListIterator<Integer> oob = fixture.listIterator(4);
+        ListIterator<Integer> outOfBounds = fixture.listIterator(4);
     }
 
     @Test(expected = NoSuchElementException.class)

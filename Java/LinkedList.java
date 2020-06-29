@@ -14,7 +14,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
-import java.util.Arrays;
 
 public class LinkedList<E> implements List<E> {
 
@@ -24,6 +23,27 @@ public class LinkedList<E> implements List<E> {
    
     private Node<E> getHead(){
         return this.head;
+    }
+    
+    @Override
+    public String toString(){
+
+        Node<E> itr = this.head;
+        StringBuilder listStr = new StringBuilder("[");
+
+        while(itr != null){
+
+            if(itr.next != null){
+                listStr.append( itr.getData().toString() + ", " );
+            } else {
+                listStr.append( itr.getData().toString() );
+            }
+
+            itr = itr.getNext();
+        }
+
+        listStr.append(']');
+        return listStr.toString();
     }
 
     @Override
@@ -45,12 +65,8 @@ public class LinkedList<E> implements List<E> {
     @Override
     public boolean contains(Object o) {
 
-        if( o == null ){
-            throw new NullPointerException();
-        }
-
-        if( this.size == 0 ) {
-            return true;
+        if( this.isEmpty() ) {
+            return false;
         }
 
         if( this.head.contains(o) ){
@@ -72,8 +88,8 @@ public class LinkedList<E> implements List<E> {
 
     public boolean containsRecursiveExample(Object o){
 
-        if( o == null ) {
-            throw new NullPointerException();
+        if( this.isEmpty() ){
+            return false;
         }
 
         return containsRecursiveExample(this.head, o);
@@ -101,10 +117,11 @@ public class LinkedList<E> implements List<E> {
     @Override
     public Object[] toArray() {
 
-        ListIterator<E> sllIterator= this.listIterator();
-        Object[] array = new Object[this.size()];
-        while(sllIterator.hasNext()){
-            array[sllIterator.nextIndex()] = sllIterator.next();
+        Object[] array = new Object[this.size()];        
+        Node<E> itr = this.head;
+        for(int i = 0; i < this.size(); ++i) {
+            array[i] = itr.getData();
+            itr = itr.getNext();
         }
         return array;
     }
@@ -119,13 +136,13 @@ public class LinkedList<E> implements List<E> {
                 a.getClass().getComponentType(), this.size());
         }
         
-        Node<E> tmp = this.head;
+        Node<E> itr = this.head;
         for(int i = 0; i < a.length; ++i) {
 
-            a[i] = (T) tmp.getData(); // has to at least be super for every elem.
-            tmp = tmp.getNext();
+            a[i] = (T) itr.getData(); // has to at least be super for every elem.
+            itr = itr.getNext();
 
-            if( tmp == null && a.length > this.size() ){
+            if( itr == null && a.length > this.size() ){
                 a[++i] = null;
                 break;
             }
@@ -136,10 +153,6 @@ public class LinkedList<E> implements List<E> {
     @Override
     public boolean add(E e) {
         
-        if( e == null ) {
-            throw new NullPointerException();
-        }
-
         Node<E> tmp = new Node<E>(e);
 
         if( this.size == 0 ) {
@@ -157,8 +170,53 @@ public class LinkedList<E> implements List<E> {
 
     @Override
     public boolean remove(Object o) {
-        // TODO Auto-generated method stub
-        return false;
+
+        if( this.isEmpty() ){
+            return false;
+        }
+
+        Node<E> itr = this.head;
+        
+        // head or final element
+        if( this.head.contains(o) ){
+            
+            if( itr.getNext() == null ) {
+                this.tail = null;
+            }
+
+            this.head = itr.getNext();
+            itr.setNext(null);
+            --this.size;
+            return true;
+        }
+
+        // 1 node left but did not contain
+        if(itr.getNext() == null){
+            return false;
+        }
+         
+        while( !itr.getNext().contains(o) ){
+
+            if(itr.getNext().getNext() == null){
+                return false;
+            } 
+            itr = itr.getNext();
+        }
+
+        // tail
+        if( itr.getNext().getNext() == null ){
+            this.tail = itr;
+            itr.setNext(null);
+            --this.size;
+            return true;
+        }
+
+        // middle
+        Node<E> tmp = itr.getNext();
+        itr.setNext(itr.getNext().getNext());
+        tmp.setNext(null);
+        --this.size;
+        return true;
     }
 
     @Override
@@ -333,6 +391,11 @@ public class LinkedList<E> implements List<E> {
         private Node<T> next = null;
 
         private Node(T data) {
+
+            if( data == null ) {
+                throw new NullPointerException();
+            }
+
             this.data = data;
         }
 
@@ -353,7 +416,7 @@ public class LinkedList<E> implements List<E> {
         }
 
         private boolean contains(Object o){
-            return this.data.equals(data);
+            return o.equals(this.data);
         }
 
         // read method is public
