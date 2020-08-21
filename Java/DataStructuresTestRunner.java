@@ -16,15 +16,19 @@ import static org.junit.Assert.*;
 
 // for initial TestRunner...Testing without our stuff.
 import java.util.Collection;
+import java.util.ArrayList;
+
+//Iterators
 import java.util.Iterator;
 import java.util.ListIterator;
-import java.util.ArrayList;
+
+// Exceptions
 import java.util.NoSuchElementException;
 
 // Utilities
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-
+import java.lang.Math;
 
 public class DataStructuresTestRunner 
 {
@@ -295,7 +299,7 @@ public class DataStructuresTestRunner
         // 4 however is out of bounds since no element exists
         // between 3 and 4...head scramble...!!!
 
-        ListIterator<Integer> outOfBounds = fixture.listIterator(4);
+        fixture.listIterator(4);
     }
 
     @Test(expected = NoSuchElementException.class)
@@ -349,7 +353,6 @@ public class DataStructuresTestRunner
         assertEquals(array2[2],2);
     }
 
-
     @AfterClass
     public static void TEARDOWN() {
 
@@ -357,8 +360,11 @@ public class DataStructuresTestRunner
         System.out.print("Finished... ");
         System.out.println(endTime);
 
+        // Notice there is no hard coded "unit",
+        // if TIME_UNIT is changed so does the string rep(unit) of
+        // the new TIME_UNIT
         long suiteTime = START_TIME.until(endTime, TIME_UNIT);
-        System.out.print("Total Suite Time in Milli-Seconds... ");
-        System.out.println(suiteTime);
+        System.out.print("Total Suite Time ... ");
+        System.out.println(Math.ceil(suiteTime) + " " + TIME_UNIT.toString());
     }
 } 

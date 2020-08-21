@@ -4,7 +4,8 @@
 // #include <iostream>
 // #include <vector>
 // #include <string>
- #include <sstream>
+#include <sstream>
+#include <vector>
 
 // The testing framework
 // https://github.com/catchorg/Catch2/blob/master/docs/tutorial.md#top
@@ -13,6 +14,7 @@
 
 // Our stuff
 #include "LinkedList.hpp"
+#include "TernaryTrie.hpp"
 
 using namespace std;
 
@@ -26,7 +28,7 @@ TEST_CASE( "LinkedList Add, Stream" ) {
     REQUIRE( buffer.str() == "[]" );
 
     buffer.str(""); // http://www.cplusplus.com/forum/general/51686/
-                    // clearing may be necessary also in the event of
+    buffer.clear(); // clearing may be necessary also in the event of
                     // and error in the stream. i.e. buffer.clear();
 
     LinkedList<string> l1 = LinkedList<string>();
@@ -197,3 +199,190 @@ TEST_CASE( "triple down!" ){
 
 }
 
+/** TERNARY TRIE */
+TEST_CASE( "Word Constuctor" ) {
+
+
+    Trie dict = Trie("aba");
+    REQUIRE( dict.contains("aba") == true );
+
+    dict.add("baa");
+    dict.add("bab");
+    
+    dict.add("aaab");
+    dict.add("aaa");
+    dict.add("aaaa");
+    
+    dict.add("aaba");
+
+    REQUIRE( dict.contains("baa") == true );
+    REQUIRE( dict.contains("bab") == true );
+    REQUIRE( dict.contains("aaab") == true );
+    REQUIRE( dict.contains("aaa") == true );
+    REQUIRE( dict.contains("aaaa") == true );
+    REQUIRE( dict.contains("aaba") == true );
+
+    REQUIRE( dict.starts_with("aa") == true );
+
+    REQUIRE( dict.contains("aa") == false );
+    dict.add("aa");
+    REQUIRE( dict.contains("aa") == true );
+
+    dict.add("c");
+    REQUIRE( dict.contains("c") == true );
+    REQUIRE( dict.starts_with("c") == true );
+
+   REQUIRE( dict.starts_with("cc") == false );
+   dict.add("ccc");
+   REQUIRE( dict.starts_with("cc") == true );
+   dict.add("cc");
+   REQUIRE( dict.starts_with("cc") == true );
+   REQUIRE( dict.contains("cc") == true );
+
+   REQUIRE( dict.contains("cccccc") == false );
+
+
+}
+
+TEST_CASE( "Default Constructor" ) {
+    Trie dict = Trie();
+    dict.add("aba");
+    REQUIRE( dict.contains("aba") == true );
+
+    dict.add("baa");
+    dict.add("bab");
+    
+    dict.add("aaab");
+    dict.add("aaa");
+    dict.add("aaaa");
+    
+    dict.add("aaba");
+
+    REQUIRE( dict.contains("baa") == true );
+    REQUIRE( dict.contains("bab") == true );
+    REQUIRE( dict.contains("aaab") == true );
+    REQUIRE( dict.contains("aaa") == true );
+    REQUIRE( dict.contains("aaaa") == true );
+    REQUIRE( dict.contains("aaba") == true );
+
+    REQUIRE( dict.starts_with("aa") == true );
+
+    REQUIRE( dict.contains("aa") == false );
+    dict.add("aa");
+    REQUIRE( dict.contains("aa") == true );
+
+    dict.add("c");
+    REQUIRE( dict.contains("c") == true );
+    REQUIRE( dict.starts_with("c") == true );
+
+   REQUIRE( dict.starts_with("cc") == false );
+   dict.add("ccc");
+   REQUIRE( dict.starts_with("cc") == true );
+   dict.add("cc");
+   REQUIRE( dict.starts_with("cc") == true );
+   REQUIRE( dict.contains("cc") == true );
+}
+
+
+/*void find_words( Trie &dict, vector<vector<char>> &board, vector<vector<bool>> &visited, int m, int n, string branch_acc, vector<string> &acc ){
+    
+    branch_acc+=board[m][n];
+
+    if( dict.contains(branch_acc) ){
+        acc.push_back(branch_acc);
+    }
+
+    visited[m][n] = true;
+
+    if( m - 1 >= 0 && !visited[m-1][n]){
+        find_words(dict, board, visited, m-1, n, branch_acc, acc);    
+    }
+
+    if( n - 1 >= 0 && !visited[m][n-1] ) {
+        find_words(dict, board, visited, m, n-1 , branch_acc, acc);    
+    }
+
+    if( m + 1 < board.size() && !visited[m+1][n]) {
+        find_words(dict, board, visited, m+1, n, branch_acc, acc);    
+  
+    }
+    if( n + 1 < board[0].size() && !visited[m][n+1]){
+        find_words(dict, board, visited, m, n+1, branch_acc, acc);    
+    }
+
+    branch_acc.erase(branch_acc.length() - 1); 
+    visited[m][n] = false; 
+}*/
+
+
+
+/*TEST_CASE( "LEET Word Search" ){
+   //["oath","pea","eat","rain"]
+
+   //[["o","a","a","n"],["e","t","a","e"],["i","h","k","r"],["i","f","l","v"]]
+
+    vector<string> words;
+    words.push_back("oath");
+    words.push_back("pea");
+    words.push_back("eat");
+    words.push_back("rain");
+
+    vector<char> r1;
+    r1.push_back('o');
+    r1.push_back('a');
+    r1.push_back('a');
+    r1.push_back('n');
+
+    vector<char> r2;
+    r2.push_back('e');
+    r2.push_back('t');
+    r2.push_back('a');
+    r2.push_back('e');
+
+    vector<char> r3;
+    r3.push_back('i');
+    r3.push_back('h');
+    r3.push_back('k');
+    r3.push_back('r');
+
+    vector<char> r4;
+    r4.push_back('i');
+    r4.push_back('f');
+    r4.push_back('l');
+    r4.push_back('v');
+
+    vector<vector<char>> board;
+    board.push_back(r1);
+    board.push_back(r2);
+    board.push_back(r3);
+    board.push_back(r4);
+
+    
+    sort(words.begin(), words.end());
+
+    Trie dict = Trie(words[0]);
+    for( int i = 1; i < words.size(); ++i ){
+        dict.add(words[i]);
+    }
+   
+    REQUIRE( dict.contains("oath") == true );
+    REQUIRE( dict.contains("pea") == true );
+    REQUIRE( dict.contains("eat") == true );
+    REQUIRE( dict.contains("rain") == true );
+
+    
+
+    vector<bool> v(board[0].size());
+    vector<vector<bool>> visited(board.size(),v);
+    vector<string> acc;
+
+    for(int i = 0; i < board.size(); ++i ) {
+        for( int j = 0 ; j < board[i].size(); ++j ){            
+            find_words(dict, board, visited, i, j, "", acc);
+        }
+    }
+
+    for( int i = 0; i < acc.size(); ++i ){
+        cout<<acc[i]<<endl;
+    }
+}*/

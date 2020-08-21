@@ -1,0 +1,25 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"java.project.referencedLibraries": [
+			"lib/**/*.jar",
+			"hamcrest-core-1.3.jar",
+			"junit-4.13.jar",
+			"Java/hamcrest-core-1.3.jar",
+			"Java/junit-4.13.jar",
+			"/Users/jaredarnold/DataStructures/**/*.jar"
+		],
+		"files.associations": {
+			"iosfwd": "cpp",
+			"iostream": "cpp",
+			"__split_buffer": "cpp",
+			"deque": "cpp",
+			"string": "cpp",
+			"vector": "cpp"
+		}
+	}
+}

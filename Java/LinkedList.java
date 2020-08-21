@@ -4,12 +4,11 @@
 // DataStructuresTestRunner.java will be used to test THOSE implementations.
 
 // Using underlying Node backing Structure.
-// high level explanation of a LinkedList and why there is no
-// Backing array...as one may see in a Stack or Queue.
 
 package Java;
 
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -19,6 +18,7 @@ public class LinkedList<E> implements List<E> {
 
     private Node<E> head = null;
     private Node<E> tail = head;
+    private int modCount = 0;
     private int size = 0;
    
     private Node<E> getHead(){
@@ -73,16 +73,17 @@ public class LinkedList<E> implements List<E> {
             return true;
         }
         
-        Node<E> tmp = this.head.getNext();
+        Node<E> itr = this.head.getNext();
 
-        while( tmp != null ) {
+        while( itr != null ) {
 
-            if( tmp.contains(o) ) {
+            if( itr.contains(o) ) {
                 return true;
             }
 
-            tmp = tmp.getNext();
+            itr = itr.getNext();
         }
+
         return false;
     }
 
@@ -110,16 +111,16 @@ public class LinkedList<E> implements List<E> {
 
     @Override
     public Iterator<E> iterator() {
-
         return new SinglyLinkedListIterator();
     }
 
     @Override
     public Object[] toArray() {
 
-        Object[] array = new Object[this.size()];        
+        Object[] array = new Object[this.size];        
         Node<E> itr = this.head;
-        for(int i = 0; i < this.size(); ++i) {
+        for(int i = 0; i < this.size; ++i) {
+
             array[i] = itr.getData();
             itr = itr.getNext();
         }
@@ -131,18 +132,18 @@ public class LinkedList<E> implements List<E> {
     public <T> T[] toArray(T[] a) {
 
         // best solution I could find for this one...plus java src uses it ;)
-        if( this.size() > a.length ){
+        if( this.size > a.length ){
             a = (T[]) java.lang.reflect.Array.newInstance(
-                a.getClass().getComponentType(), this.size());
+                a.getClass().getComponentType(), this.size);
         }
-        
+
         Node<E> itr = this.head;
         for(int i = 0; i < a.length; ++i) {
 
             a[i] = (T) itr.getData(); // has to at least be super for every elem.
             itr = itr.getNext();
 
-            if( itr == null && a.length > this.size() ){
+            if( itr == null && a.length > this.size ){
                 a[++i] = null;
                 break;
             }
@@ -165,7 +166,6 @@ public class LinkedList<E> implements List<E> {
 
         ++this.size;
         return true;
-        
     }
 
     @Override
@@ -177,13 +177,15 @@ public class LinkedList<E> implements List<E> {
 
         Node<E> itr = this.head;
         
-        // head or final element
+        // head contains
         if( this.head.contains(o) ){
             
+            // head is final element set tail too.
             if( itr.getNext() == null ) {
                 this.tail = null;
             }
-
+            
+            // adjust head
             this.head = itr.getNext();
             itr.setNext(null);
             --this.size;
@@ -191,10 +193,11 @@ public class LinkedList<E> implements List<E> {
         }
 
         // 1 node left but did not contain
-        if(itr.getNext() == null){
+        if( itr.getNext() == null ){
             return false;
         }
-         
+        
+        // find node before the one we are removing
         while( !itr.getNext().contains(o) ){
 
             if(itr.getNext().getNext() == null){
@@ -203,7 +206,7 @@ public class LinkedList<E> implements List<E> {
             itr = itr.getNext();
         }
 
-        // tail
+        // tail - use tail as next to unlink
         if( itr.getNext().getNext() == null ){
             this.tail = itr;
             itr.setNext(null);
@@ -211,7 +214,7 @@ public class LinkedList<E> implements List<E> {
             return true;
         }
 
-        // middle
+        // middle - use tmp as next to unlink
         Node<E> tmp = itr.getNext();
         itr.setNext(itr.getNext().getNext());
         tmp.setNext(null);
@@ -299,17 +302,17 @@ public class LinkedList<E> implements List<E> {
     @Override
     public ListIterator<E> listIterator(int index) {
 
-        if( index < 0 || index > this.size() ){
+        if( index < 0 || index > this.size ){
             throw new IndexOutOfBoundsException();
         }
 
-        ListIterator<E> sllIterator = new SinglyLinkedListIterator();
+        SinglyLinkedListIterator iterator = new SinglyLinkedListIterator();
 
-        while( sllIterator.nextIndex() != index ){
-            sllIterator.next();
+        while( iterator.nextIndex() < index ) {
+            iterator.next();
         }
 
-        return sllIterator;
+        return iterator;
     }
 
     @Override
@@ -323,14 +326,22 @@ public class LinkedList<E> implements List<E> {
     // Decided to implement ListIterator in order to handle
     // all of List's iterator methods with a single class...
 
-    // Whoa not sure why we cannot parameterize LinkedListIterator
+    // Whoa not sure why we cannot parameterize SinglyLinkedListIterator
     // but it works.
+    // ...
+    // update Java source does this Exactly :O...
     private class SinglyLinkedListIterator implements ListIterator<E> {
 
         // variable names should highlight that
         // ListIterator is always between nodes...
+        // starts before 0/head...
         private Node<E> next = getHead();
         private int nxtIndex = 0;
+
+        // https://docs.oracle.com/javase/8/docs/api/java/util/LinkedList.html
+        private void failFastConcurrentModification(){
+            throw new ConcurrentModificationException();
+        }
 
         @Override
         public boolean hasNext() {
@@ -343,6 +354,7 @@ public class LinkedList<E> implements List<E> {
             if( !hasNext() ){
                 throw new NoSuchElementException();
             }
+
             E data = next.getData();
             next = next.getNext();
             ++nxtIndex;
